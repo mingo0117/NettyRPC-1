@@ -22,6 +22,8 @@
 
     <nettyrpc:service id="demoStore" interfaceName="com.newlandframework.rpc.services.Store"
                       ref="storeService" filter="simpleFilter"></nettyrpc:service>
+    <nettyrpc:service id="demoSendMsgService" interfaceName="com.newlandframework.rpc.services.SendMsg"
+                      ref="sendMsgService" filter="simpleFilter"></nettyrpc:service>
 
     <nettyrpc:registry id="rpcRegistry" ipAddr="${rpc.server.addr}" echoApiPort="${rpc.server.echo.api.port}"
                        protocol="PROTOSTUFFSERIALIZE"></nettyrpc:registry>
@@ -32,6 +34,7 @@
     <bean id="costTimeCalculateService" class="com.newlandframework.rpc.services.impl.CostTimeCalculateImpl"></bean>
     <bean id="cacheService" class="com.newlandframework.rpc.services.impl.CacheImpl"></bean>
     <bean id="storeService" class="com.newlandframework.rpc.services.impl.StoreImpl"></bean>
+    <bean id="sendMsgService" class="com.newlandframework.rpc.services.impl.SendMsgImpl"></bean>
 
     <bean id="simpleFilter" class="com.newlandframework.rpc.filter.support.SimpleFilter"></bean>
 

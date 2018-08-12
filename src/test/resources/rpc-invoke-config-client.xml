@@ -22,4 +22,6 @@
                         protocol="PROTOSTUFFSERIALIZE" ipAddr="${rpc.server.addr}"/>
     <nettyrpc:reference id="store" interfaceName="com.newlandframework.rpc.services.Store"
                         protocol="PROTOSTUFFSERIALIZE" ipAddr="${rpc.server.addr}"/>
+    <nettyrpc:reference id="sendMsg" interfaceName="com.newlandframework.rpc.services.SendMsg"
+                        protocol="PROTOSTUFFSERIALIZE" ipAddr="${rpc.server.addr}"/>
 </beans>

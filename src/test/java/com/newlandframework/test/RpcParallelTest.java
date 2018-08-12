@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.newlandframework.rpc.services.AddCalculate;
 import com.newlandframework.rpc.services.MultiCalculate;
+import com.newlandframework.rpc.services.SendMsg;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -74,6 +75,28 @@ public class RpcParallelTest {
         System.out.println(tip);
     }
 
+    public static void parallelSendMsgTask(SendMsg sendMsg, int parallel) throws InterruptedException {
+        //开始计时
+        StopWatch sw = new StopWatch();
+        sw.start();
+
+        CountDownLatch signal = new CountDownLatch(1);
+        CountDownLatch finish = new CountDownLatch(parallel);
+
+        for (int index = 0; index < parallel; index++) {
+            SendMsgParallelRequestThread client = new SendMsgParallelRequestThread(sendMsg, signal, finish, index);
+            new Thread(client).start();
+        }
+
+        signal.countDown();
+        finish.await();
+        sw.stop();
+
+        String tip = String.format("发消息RPC调用总共耗时: [%s] 毫秒", sw.getTime());
+        System.out.println(tip);
+    }
+
+
     public static void addTask(AddCalculate calc, int parallel) throws InterruptedException {
         RpcParallelTest.parallelAddCalcTask(calc, parallel);
         TimeUnit.MILLISECONDS.sleep(30);
@@ -84,14 +107,20 @@ public class RpcParallelTest {
         TimeUnit.MILLISECONDS.sleep(30);
     }
 
+    public static void sendMsgTask(SendMsg sendMsg, int parallel) throws InterruptedException {
+        RpcParallelTest.parallelSendMsgTask(sendMsg, parallel);
+        TimeUnit.MILLISECONDS.sleep(30);
+    }
+
     public static void main(String[] args) throws Exception {
         //并行度1000
-        int parallel = 1000;
+        int parallel = 3000;
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:rpc-invoke-config-client.xml");
 
         for (int i = 0; i < 1; i++) {
-            addTask((AddCalculate) context.getBean("addCalc"), parallel);
-            multiTask((MultiCalculate) context.getBean("multiCalc"), parallel);
+            /*addTask((AddCalculate) context.getBean("addCalc"), parallel);
+            multiTask((MultiCalculate) context.getBean("multiCalc"), parallel);*/
+            sendMsgTask((SendMsg)context.getBean("sendMsg"), parallel);
             System.out.printf("[author tangjie] Netty RPC Server 消息协议序列化第[%d]轮并发验证结束!\n\n", i);
         }
 
